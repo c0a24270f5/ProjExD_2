@@ -11,9 +11,12 @@ DELTA = {
     pg.K_LEFT: (-5, 0),
     pg.K_RIGHT: (+5, 0),
 }
+
+bb_accs = [ a for a in range(1, 11)]
+
 os.chdir(os.path.dirname(os.path.abspath(__file__)))
 
-
+    
 def check_bound(rct: pg.Rect) -> tuple[bool, bool]:
     """
     引数：こうかとんRectまたは爆弾Rect
@@ -73,6 +76,8 @@ def main():
 
         key_lst = pg.key.get_pressed()
         sum_mv = [0, 0]
+        avx = vx*bb_accs[min(tmr//500, 9)]
+        avy = vy*bb_accs[min(tmr//500, 9)]
 
         for key, mv in DELTA.items():
 
@@ -83,10 +88,9 @@ def main():
         kk_rct.move_ip(sum_mv)
         if check_bound(kk_rct) != (True, True):
             kk_rct.move_ip(-sum_mv[0], -sum_mv[1])   #画面の外だったら
-        
-        bb_rct.move_ip(vx, vy)
+        bb_rct.move_ip(avx, avy)
         screen.blit(kk_img, kk_rct)
-        bb_rct.move_ip(vx, vy)
+        bb_rct.move_ip(avx, avy)
         yoko, tate = check_bound(bb_rct)
         if not yoko:
             vx *= -1
