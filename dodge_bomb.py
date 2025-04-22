@@ -86,14 +86,17 @@ def main():
                 sum_mv[1] += mv[1]
                 
         kk_rct.move_ip(sum_mv)
+
         if check_bound(kk_rct) != (True, True):
             kk_rct.move_ip(-sum_mv[0], -sum_mv[1])   #画面の外だったら
         bb_rct.move_ip(avx, avy)
         screen.blit(kk_img, kk_rct)
         bb_rct.move_ip(avx, avy)
         yoko, tate = check_bound(bb_rct)
+        
         if not yoko:
             vx *= -1
+            
         if not tate:
             vy *= -1
         screen.blit(bb_img, bb_rct)
