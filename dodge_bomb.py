@@ -2,7 +2,7 @@ import os
 import random
 import sys
 import pygame as pg
-
+import time
 
 WIDTH, HEIGHT = 1100, 650
 DELTA = {
@@ -36,6 +36,12 @@ def main():
     screen = pg.display.set_mode((WIDTH, HEIGHT))
     bg_img = pg.image.load("fig/pg_bg.jpg")    
     kk_img = pg.transform.rotozoom(pg.image.load("fig/3.png"), 0, 0.9)
+    kk_naki_img = pg.transform.rotozoom(pg.image.load("fig/8.png"), 0, 0.9)
+    kk_naki_rct = kk_naki_img.get_rect(center=(WIDTH-750,HEIGHT/2))
+    kk_naki_rct2 = kk_naki_img.get_rect(center=(WIDTH-350,HEIGHT/2))
+    fonto = pg.font.Font(None, 80)
+    txt = fonto.render("Game over", True, (255, 255, 255))
+    txt_rect = txt.get_rect(center=(WIDTH/2,HEIGHT/2))
     kk_rct = kk_img.get_rect()
     kk_rct.center = 300, 200
     bb_img  = pg.Surface((20, 20))
@@ -44,16 +50,26 @@ def main():
     bb_rct = bb_img.get_rect()
     bb_rct.center = random.randint(0,WIDTH), random.randint(0, HEIGHT)
     vx , vy = +5, +5
+    black_img = pg.Surface((WIDTH, HEIGHT))
+    pg.draw.rect(black_img, (0, 0, 0), [0,0,WIDTH,HEIGHT])
+    black_img.set_alpha(200)
     clock = pg.time.Clock()
     tmr = 0
+    
     while True:
         for event in pg.event.get():
             if event.type == pg.QUIT: 
                 return
         screen.blit(bg_img, [0, 0]) 
 
-        if kk_rct.colliderect(bb_rct): #こうかとんRectと爆弾Rectが重なっていたら
-            return
+        if kk_rct.colliderect(bb_rct): #こうかとんRectと爆弾Rectが重なったら
+            screen.blit(black_img, [0,0])
+            screen.blit(kk_naki_img, kk_naki_rct )
+            screen.blit(kk_naki_img, kk_naki_rct2 )
+            screen.blit(txt, txt_rect)
+            pg.display.update()
+            time.sleep(5)
+            return 
 
         key_lst = pg.key.get_pressed()
         sum_mv = [0, 0]
@@ -77,6 +93,7 @@ def main():
         if not tate:
             vy *= -1
         screen.blit(bb_img, bb_rct)
+        
         pg.display.update()
         tmr += 1
         clock.tick(50)
